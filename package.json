@@ -2,12 +2,13 @@
   "name": "ircshard",
   "description": "a scalable IRC connection manager",
   "author": "Alex Nichol <unixpickle@gmail.com>",
+  "repository": "https://github.com/unixpickle/ircshard",
   "dependencies": {
     "irc": "0.3.x",
     "coffee-script": "1.6.x",
     "distobj": "0.0.x"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "licenses": [{
     "type": "GPL",
     "url": "http://www.gnu.org/licenses/gpl.html"
