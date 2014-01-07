@@ -1,5 +1,5 @@
 {
-  "name": "ircnode",
+  "name": "ircshard",
   "description": "a scalable IRC connection manager",
   "author": "Alex Nichol <unixpickle@gmail.com>",
   "dependencies": {

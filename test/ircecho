@@ -11,11 +11,8 @@ if isNaN port = parseInt process.argv[2]
 username = process.argv[3]
 channel = process.argv[4]
 
-{Client} = require 'distobj'
-net = require 'net'
-socket = net.connect port, 'localhost'
-client = new Client socket, ->
-  # the client connection has been created
+{connect} = require '../index'
+connect port, 'localhost', (err, client) ->
   client.register username, true, process.argv[5]
   client.on 'registered', ->
     console.log 'registered successfully; joining ' + channel
@@ -24,9 +21,7 @@ client = new Client socket, ->
       console.log '[for ' + username + '] ' + JSON.stringify obj
     client.on 'disconnect', (username, e) ->
       console.log "#{username} disconnected because #{JSON.stringify e}"
-
-process.on 'SIGINT', ->
-  client.disconnect process.argv[3]
-  fn = process.exit.bind null, 1
-  setTimeout fn, 1000
-  
+  process.on 'SIGINT', ->
+    client.disconnect process.argv[3]
+    fn = process.exit.bind null, 1
+    setTimeout fn, 1000
