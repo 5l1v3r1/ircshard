@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 
 if process.argv.length != 4
-  console.log 'Usage: slave <port> <irc server>'
+  console.log 'Usage: ircshard-slave <port> <irc server>'
   process.exit 1
 
 if isNaN port = parseInt process.argv[2]

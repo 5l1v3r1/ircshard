@@ -16,6 +16,6 @@
     "node": "0.10.x"
   },
   "bin": {
-    "irc-node": "./bin/irc-slave"
+    "ircshard-slave": "./bin/ircshard-slave"
   }
 }
