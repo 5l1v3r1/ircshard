@@ -1,0 +1,19 @@
+#!/usr/bin/env coffee
+
+if process.argv.length != 4
+  console.log 'Usage: slave <port> <irc server>'
+  process.exit 1
+
+if isNaN port = parseInt process.argv[2]
+  console.log 'invalid port: ' + process.argv[2]
+  process.exit 1
+
+Slave = require '../lib/slave'
+{Server} = require 'distobj'
+net = require 'net'
+
+slave = new Slave process.argv[3]
+server = net.createServer()
+serverObj = new Server server, slave
+server.listen port
+
