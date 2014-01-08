@@ -20,8 +20,11 @@ class Slave extends Manager
         from: from
         msg: msg
       @emit 'message', username, obj
+    client.on 'nick', (old, newNick) =>
+      @emit 'nick', username, newNick, old
     client.once 'registered', =>
       @emit 'registered', username
+      @emit 'nick', username, client.nick, null
 
   join: (username, channel) ->
     return if not @clients[username]?

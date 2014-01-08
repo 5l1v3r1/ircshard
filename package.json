@@ -6,7 +6,8 @@
   "dependencies": {
     "irc": "0.3.x",
     "coffee-script": "1.6.x",
-    "distobj": "0.0.x"
+    "distobj": "0.0.x",
+    "eventemitter2": "0.4.x"
   },
   "version": "0.0.2",
   "licenses": [{
