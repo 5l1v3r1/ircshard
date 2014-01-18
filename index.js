@@ -21,4 +21,5 @@ exports.connect = function(port, _a, _b) {
     
     socket.once('error', errorHandler);
     socket.once('connect', connectHandler);
+    return socket;
 };
