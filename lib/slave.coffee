@@ -14,14 +14,27 @@ class Slave extends Manager
     @clients[username] = client
     client.on 'error', @_handleError.bind this, username
     client.on 'netError', @_handleError.bind this, username
-    client.on (if allMsg then 'message' else 'pm'), (from, to, msg) =>
-      obj = 
-        to: to
-        from: from
-        msg: msg
-      @emit 'message', username, obj
+    
+    # allMsg should only be used for bot snooping accounts
+    if allMsg
+      client.on 'names', (channel, users) =>
+        for user of users
+          @emit 'enter', username, channel, user
+      client.on 'part', (channel, who, reason) =>
+        @emit 'exit', username, channel, who
+      client.on 'join', (channel, who) =>
+        @emit 'enter', username, channel, who
+      client.on 'message', (from, to, msg) =>
+        obj = to: to, from: from, msg: msg
+        @emit 'message', username, obj
+    else
+      client.on 'pm', (from, msg) =>
+        obj = to: client.nick, from: from, msg: msg
+        @emit 'message', username, obj
+    
     client.on 'nick', (old, newNick) =>
       @emit 'nick', username, newNick, old
+    
     client.once 'registered', =>
       @emit 'registered', username
       @emit 'nick', username, client.nick, null

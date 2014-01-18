@@ -21,9 +21,13 @@ connect port, 'localhost', (err, client) ->
       console.log '[for ' + username + '] ' + JSON.stringify obj
     client.on 'disconnect', (username, e) ->
       console.log "#{username} disconnected because #{JSON.stringify e}"
+    client.on 'enter', (username, channel, who) ->
+      console.log "[for #{username}] #{who} entered #{channel}"
+    client.on 'exit', (username, channel, who) ->
+      console.log "[for #{username}] #{who} left #{channel}"
   client.on 'nick', (username, newNick, oldNick) ->
     console.log username + ' changed nick to ' + newNick + ' from ' + oldNick
   process.on 'SIGINT', ->
     client.disconnect process.argv[3]
-    fn = process.exit.bind null, 1
+    fn = process.exit.bind null, 0
     setTimeout fn, 1000

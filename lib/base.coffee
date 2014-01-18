@@ -7,16 +7,14 @@ events:
  - 'message': a message has been received for a specific user
  - 'registered': a user has been registered with the IRC server
  - 'nick': the user changed their nick, args: username, new, old
+ - 'enter': a user detected a nick entering a channel
+ - 'exit': a user detected a nick leaving a channel
 ###
 class Manager extends Emitter
   constructor: (@server) -> super()
-
   register: (username, allMsg, password) -> @emit 'error', new Error 'NYI'
-
   join: (username, channel) -> @emit 'error', new Error 'NYI'
-
   say: (username, destination, message) -> @emit 'error', new Error 'NYI'
-
   disconnect: (username) -> @emit 'error', new Error 'NYI'
 
 module.exports = Manager
