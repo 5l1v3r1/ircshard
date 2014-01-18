@@ -19,29 +19,33 @@ class Slave extends Manager
     if allMsg
       client.on 'names', (channel, users) =>
         for user of users
-          @emit 'enter', username, channel, user
+          @_emitUser 'enter', username, channel, user
       client.on 'part', (channel, who, reason) =>
-        @emit 'exit', username, channel, who
+        @_emitUser 'exit', username, channel, who
       client.on 'join', (channel, who) =>
-        @emit 'enter', username, channel, who
+        @_emitUser 'enter', username, channel, who
       client.on 'message', (from, to, msg) =>
         obj = to: to, from: from, msg: msg
-        @emit 'message', username, obj
+        @_emitUser 'message', username, obj
     else
       client.on 'pm', (from, msg) =>
         obj = to: client.nick, from: from, msg: msg
-        @emit 'message', username, obj
+        @_emitUser 'message', username, obj
     
     client.on 'nick', (old, newNick) =>
-      @emit 'nick', username, newNick, old
+      @_emitUser 'nick', username, newNick, old
     
     client.once 'registered', =>
-      @emit 'registered', username
-      @emit 'nick', username, client.nick, null
+      @_emitUser 'registered', username
+      @_emitUser 'nick', username, client.nick, null
 
   join: (username, channel) ->
     return if not @clients[username]?
     @clients[username].join channel
+
+  part: (username, channel) ->
+    return if not @clients[username]?
+    @clients[username].part channel, 'User left'
 
   say: (username, to, msg) ->
     return if not @clients[username]?
@@ -55,7 +59,7 @@ class Slave extends Manager
 
   _handleError: (username, e) ->
     @disconnect username
-    @emit 'disconnect', username, e
+    @_emitUser 'disconnect', username, e
 
 module.exports = Slave
 
