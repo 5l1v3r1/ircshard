@@ -1,6 +1,7 @@
 {EventEmitter2} = require 'eventemitter2'
 Manager = require './base'
 irc = require 'irc'
+assert = require 'assert'
 
 class Slave extends Manager
   constructor: (server) ->
@@ -15,15 +16,16 @@ class Slave extends Manager
     client.on 'error', @_handleError.bind this, username
     client.on 'netError', @_handleError.bind this, username
     
+    client.on 'names', (channel, users) =>
+      for user of users
+        @_emitUser 'enter', username, channel, user
+    client.on 'part', (channel, who, reason) =>
+      @_emitUser 'exit', username, channel, who
+    client.on 'join', (channel, who) =>
+      @_emitUser 'enter', username, channel, who
+    
     # allMsg should only be used for bot snooping accounts
     if allMsg
-      client.on 'names', (channel, users) =>
-        for user of users
-          @_emitUser 'enter', username, channel, user
-      client.on 'part', (channel, who, reason) =>
-        @_emitUser 'exit', username, channel, who
-      client.on 'join', (channel, who) =>
-        @_emitUser 'enter', username, channel, who
       client.on 'message', (from, to, msg) =>
         obj = to: to, from: from, msg: msg
         @_emitUser 'message', username, obj

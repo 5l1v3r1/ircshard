@@ -16,4 +16,5 @@ slave = new Slave process.argv[3]
 server = net.createServer()
 serverObj = new Server server, slave
 server.listen port
-
+serverObj.on 'error', (e) ->
+  console.log e
