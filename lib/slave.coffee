@@ -9,6 +9,10 @@ class Slave extends Manager
     @clients = {}
 
   register: (username, allMsg, password) ->
+    assert typeof username is 'string', 'invalid username'
+    assert not allMsg? or typeof allMsg is 'boolean', 'invalid allMsg'
+    assert not password? or typeof password is 'string', 'invalid password'
+    
     return if @clients[username]?
     options = if password? then {password: password} else {}
     client = new irc.Client @server, username, options
@@ -42,24 +46,33 @@ class Slave extends Manager
       @_emitUser 'nick', username, client.nick, null
 
   join: (username, channel) ->
+    assert typeof username is 'string'
+    assert typeof channel is 'string'
     return if not @clients[username]?
     @clients[username].join channel
 
   part: (username, channel) ->
+    assert typeof username is 'string'
+    assert typeof channel is 'string'
     return if not @clients[username]?
     @clients[username].part channel, 'User left'
 
   say: (username, to, msg) ->
+    assert typeof username is 'string'
+    assert typeof to is 'string'
+    assert typeof msg is 'string'
     return if not @clients[username]?
     @clients[username].say to, msg
 
   disconnect: (username) ->
+    assert typeof username is 'string'
     return if not @clients[username]?
     @clients[username].removeAllListeners()
     @clients[username].disconnect()
     delete @clients[username]
 
   _handleError: (username, e) ->
+    assert typeof username is 'string'
     @disconnect username
     @_emitUser 'disconnect', username, e
 
