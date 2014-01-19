@@ -9,7 +9,7 @@
     "distobj": "0.0.x",
     "eventemitter2": "0.4.x"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "licenses": [{
     "type": "GPL",
     "url": "http://www.gnu.org/licenses/gpl.html"

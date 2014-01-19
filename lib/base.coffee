@@ -7,6 +7,7 @@ events:
  - 'message': a message has been received for a specific user
  - 'registered': a user has been registered with the IRC server
  - 'nick': the user changed their nick, args: username, new, old
+ - 'nicklist': a user got a full nick list for a channel
  - 'enter': a user detected a nick entering a channel
  - 'exit': a user detected a nick leaving a channel
 all of these events besides the `error` event will also fire an event

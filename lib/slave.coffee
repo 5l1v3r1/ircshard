@@ -23,6 +23,7 @@ class Slave extends Manager
     client.on 'names', (channel, users) =>
       for user of users
         @_emitUser 'enter', username, channel, user
+      @_emitUser 'nicklist', username, channel, Object.keys users
     client.on 'part', (channel, who, reason) =>
       @_emitUser 'exit', username, channel, who
     client.on 'join', (channel, who) =>
