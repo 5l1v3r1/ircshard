@@ -1,6 +1,7 @@
 require('coffee-script');
 var net = require('net');
 var Client = require('distobj').Client;
+var UserClient = require('./lib/userclient');
 
 exports.connect = function(port, _a, _b) {
     var socket, cb = _b || _a;
@@ -23,3 +24,5 @@ exports.connect = function(port, _a, _b) {
     socket.once('connect', connectHandler);
     return socket;
 };
+
+exports.UserClient = UserClient;

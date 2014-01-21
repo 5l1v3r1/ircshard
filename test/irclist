@@ -1,0 +1,36 @@
+#!/usr/bin/env coffee
+
+if process.argv.length < 5
+  console.log 'Usage: ircecho <port> <handle> <channel> [password]'
+  process.exit 1
+
+if isNaN port = parseInt process.argv[2]
+  console.log 'invalid port: ' + process.argv[2]
+  process.exit 1
+
+username = process.argv[3]
+channel = process.argv[4]
+
+{connect} = require '../index'
+connect port, 'localhost', (err, client) ->
+  client.register username, username, true, process.argv[5]
+  client.on 'registered', ->
+    console.log 'registered successfully; joining ' + channel
+    client.join username, channel
+    refresh = ->
+      client.send username, 'NAMES', channel
+    setInterval refresh, 2000
+    client.on 'nicklist', (username, channel, list) ->
+      console.log 'listing for', channel, 'is', JSON.stringify list
+    client.on 'disconnect', (username, e) ->
+      console.log "#{username} disconnected because #{JSON.stringify e}"
+    client.on 'enter', (username, channel, who) ->
+      console.log "[for #{username}] #{who} entered #{channel}"
+    client.on 'exit', (username, channel, who) ->
+      console.log "[for #{username}] #{who} left #{channel}"
+  client.on 'nick', (username, newNick, oldNick) ->
+    console.log username + ' changed nick to ' + newNick + ' from ' + oldNick
+  process.on 'SIGINT', ->
+    client.disconnect process.argv[3]
+    fn = process.exit.bind null, 0
+    setTimeout fn, 1000

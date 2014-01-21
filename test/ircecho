@@ -11,23 +11,21 @@ if isNaN port = parseInt process.argv[2]
 username = process.argv[3]
 channel = process.argv[4]
 
-{connect} = require '../index'
-connect port, 'localhost', (err, client) ->
-  client.register username, true, process.argv[5]
-  client.on 'registered', ->
-    console.log 'registered successfully; joining ' + channel
-    client.join username, channel
-    client.on 'message', (username, obj) ->
-      console.log '[for ' + username + '] ' + JSON.stringify obj
-    client.on 'disconnect', (username, e) ->
-      console.log "#{username} disconnected because #{JSON.stringify e}"
-    client.on 'enter', (username, channel, who) ->
-      console.log "[for #{username}] #{who} entered #{channel}"
-    client.on 'exit', (username, channel, who) ->
-      console.log "[for #{username}] #{who} left #{channel}"
-  client.on 'nick', (username, newNick, oldNick) ->
-    console.log username + ' changed nick to ' + newNick + ' from ' + oldNick
+{connect, UserClient} = require '../index'
+
+connect port, 'localhost', (err, man) ->
+  client = new UserClient man, username, username, true, process.argv[5]
+  client.on 'message', (msg) ->
+    console.log msg.from + ' -> ' + msg.to + ': ' + msg.msg
+  client.on 'enter', (channel) ->
+    console.log 'we have joined ' + channel
+  client.on 'exit', (channel) ->
+    console.log 'we have left ' + channel
+  client.on 'nick', (nick) ->
+    console.log 'we are known as ' + nick
+  client.on 'debug', (str) -> console.log '[DEBUG]: ' + str
+  client.join channel
   process.on 'SIGINT', ->
-    client.disconnect process.argv[3]
+    client.disconnect()
     fn = process.exit.bind null, 0
     setTimeout fn, 1000
