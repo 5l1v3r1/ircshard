@@ -28,6 +28,7 @@ class Slave extends Manager
     
     client.on 'netError', @_handleError.bind this, key
     client.on 'abort', @_handleError.bind this, key
+    client.on 'error', ->
     
     client.on 'names', (channel, users) =>
       @_emitUser 'nicklist', key, channel, Object.keys users
