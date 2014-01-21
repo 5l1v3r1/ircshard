@@ -23,7 +23,7 @@ appropriate useful events.  These events are:
                a message has been sent in one of their channels.
 
 'nick'
-- Arguments: (newNick)
+- Arguments: (newNick, oldNick)
 - Description: called only when the user's nick gets changed or updated.
 
 'enter'
@@ -248,8 +248,8 @@ class UserClient extends EventEmitter
     newNick = _newNick.toLowerCase()
     oldNick = _oldNick?.toLowerCase?()
     if oldNick is @nick or not oldNick?
-      @nick = newNick
-      @emit 'nick', @nick
+      [@nick, old] = [newNick, @nick]
+      @emit 'nick', @nick, old
   
   # Event Configuration #
   
