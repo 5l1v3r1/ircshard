@@ -19,13 +19,15 @@ class Slave extends Manager
     options.autoRejoin = false
     options.userName = key
     options.realName = key
+    options.retryCount = 0
     client = new irc.Client @server, nick, options
     @clients[key] = client
     
     # these are non-fatal errors so we'll ignore them
-    #client.on 'error', @_handleError.bind this, key
+    # client.on 'error', @_handleError.bind this, key
     
     client.on 'netError', @_handleError.bind this, key
+    client.on 'abort', @_handleError.bind this, key
     
     client.on 'names', (channel, users) =>
       @_emitUser 'nicklist', key, channel, Object.keys users

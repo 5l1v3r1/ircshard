@@ -1,4 +1,5 @@
 {EventEmitter} = require 'events'
+assert = require 'assert'
 
 MAX_QUEUE_MESSAGE = 10
 JOIN_TIMEOUT = 20000
@@ -80,10 +81,12 @@ class UserClient extends EventEmitter
     @_reconnect()
   
   disconnect: (deregister = true) ->
-    @_disconnect() if deregister
+    assert @manager?, 'no longer connected'
     @_destroyEvents()
+    @_disconnect() if deregister
     @manager = null
     @password = null
+    @_cancelJoinTimeouts()
     if @reconnectTimer?
       clearTimeout @reconnectTimer
       @reconnectTimer = null
@@ -95,18 +98,19 @@ class UserClient extends EventEmitter
   _disconnect: ->
     @manager.disconnect @key
   
-  _debug: (str) ->
-    @emit 'debug', str
+  _debug: (str) -> @emit 'debug', str
   
   # Joining Channels #
   
   join: (_channel) ->
+    assert @manager?, 'no longer connected'
     channel = _channel.toLowerCase()
     return if channel in @wantChannels
     @wantChannels.push channel
     @_joinWanted channel if @registered
   
   part: (_channel) ->
+    assert @manager?, 'no longer connected'
     channel = _channel.toLowerCase()
     return if (index = @wantChannels.indexOf channel) < 0
     @wantChannels.splice index, 1
@@ -187,6 +191,7 @@ class UserClient extends EventEmitter
   # Messages #
   
   say: (_to, msg) ->
+    assert @manager?, 'no longer connected'
     to = _to.toLowerCase()
     chanPref = ['#', '&']
     

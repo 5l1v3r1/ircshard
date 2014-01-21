@@ -17,12 +17,18 @@ connect port, 'localhost', (err, man) ->
   client = new UserClient man, username, username, true, process.argv[5]
   client.on 'message', (msg) ->
     console.log msg.from + ' -> ' + msg.to + ': ' + msg.msg
+    if msg.msg is 'die'
+      console.log 'dying'
+      client.disconnect()
   client.on 'enter', (channel) ->
     console.log 'we have joined ' + channel
   client.on 'exit', (channel) ->
     console.log 'we have left ' + channel
   client.on 'nick', (nick) ->
     console.log 'we are known as ' + nick
+  client.on 'disconnect', ->
+    console.log 'disconnected, sending reconnect info'
+    client.say channel, 'Sorry, I was disconnected externally'
   client.on 'debug', (str) -> console.log '[DEBUG]: ' + str
   client.join channel
   process.on 'SIGINT', ->
